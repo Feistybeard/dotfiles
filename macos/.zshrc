@@ -101,7 +101,7 @@ alias alias ...="cd ../.."
 
 
 # shell integration
-eval "$(/opt/linuxbrew/.linuxbrew/bin/brew shellenv)"
+eval "$(/opt/homebrew/bin/brew shellenv)"
 eval "$(mise activate zsh)"
 eval "$(fzf --zsh)"
 eval "$(zoxide init --cmd cd zsh)"
