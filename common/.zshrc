@@ -36,11 +36,10 @@ autoload -U compinit && compinit
 
 zinit cdreplay -q
 
-# prompt
 eval "$(oh-my-posh init zsh --config $HOME/.config/ohmyposh/config.toml)"
 
 # keybinds
-bindkey -e
+bindkey -e #set to emacs mode
 bindkey '^p' history-search-backward
 bindkey '^n' history-search-forward
 
@@ -101,7 +100,11 @@ alias alias ...="cd ../.."
 
 
 # shell integration
-eval "$(/opt/homebrew/bin/brew shellenv)"
+
+# eval correct Homebrew path
+[[ "$OSTYPE" == "darwin"* ]] && eval "$(/opt/homebrew/bin/brew shellenv)"
+[[ "$OSTYPE" == "linux-gnu"* ]] && eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
+
 eval "$(mise activate zsh)"
 eval "$(fzf --zsh)"
 eval "$(zoxide init --cmd cd zsh)"
