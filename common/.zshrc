@@ -95,8 +95,8 @@ alias g="lazygit"
 alias gcb="git_clone_bare $1"
 alias f="fd --type f --hidden --exclude .git | fzf | xargs nvim"
 alias ..="cd .."
-alias alias ..="cd .."
-alias alias ...="cd ../.."
+alias ....="cd ../.."
+alias rmf="rm -rf"
 
 
 # shell integration
