@@ -1,6 +1,11 @@
 local wezterm = require("wezterm")
 local Settings = {}
 
+local handle = io.popen("uname")
+local system_name = handle:read("*a")
+handle:close()
+system_name = system_name:gsub("%s+", "")
+
 function Settings.setup(config)
 	config.leader = { key = "Space", mods = "SHIFT", timeout_milliseconds = 1000 }
 	config.tab_max_width = 60
@@ -10,6 +15,10 @@ function Settings.setup(config)
 	config.font_size = 16
 
 	config.window_background_opacity = 0.98
+	if system_name == "Darwin" then
+		config.window_decorations = "RESIZE"
+	end
+
 	-- config.window_decorations = "INTEGRATED_BUTTONS"
 	config.cursor_blink_rate = 600
 	config.default_cursor_style = "BlinkingBlock"
@@ -38,7 +47,6 @@ function Settings.setup(config)
 		bottom = 0,
 	}
 
-	config.animation_fps = 120
 	config.max_fps = 120
 
 	config.front_end = "WebGpu"
