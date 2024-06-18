@@ -19,7 +19,6 @@ function Settings.setup(config)
 		config.window_decorations = "RESIZE"
 	end
 
-	-- config.window_decorations = "INTEGRATED_BUTTONS"
 	config.cursor_blink_rate = 600
 	config.default_cursor_style = "BlinkingBlock"
 	config.hide_mouse_cursor_when_typing = true
@@ -27,7 +26,7 @@ function Settings.setup(config)
 	config.use_dead_keys = false
 	config.scrollback_lines = 5000
 	config.adjust_window_size_when_changing_font_size = false
-	config.hide_tab_bar_if_only_one_tab = false
+	config.hide_tab_bar_if_only_one_tab = true
 	config.use_fancy_tab_bar = false
 	config.show_tab_index_in_tab_bar = true
 
@@ -41,8 +40,8 @@ function Settings.setup(config)
 		font_size = 9,
 	}
 	config.window_padding = {
-		left = 5,
-		right = 5,
+		left = 0,
+		right = 0,
 		top = 0,
 		bottom = 0,
 	}
