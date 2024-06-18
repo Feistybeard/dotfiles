@@ -44,16 +44,16 @@ end
 
 function Keybinds.setup(config)
 	config.keys = {
-		-- move between split panes
-		split_nav("move", "h"),
-		split_nav("move", "j"),
-		split_nav("move", "k"),
-		split_nav("move", "l"),
-		-- resize panes
-		split_nav("resize", "h"),
-		split_nav("resize", "j"),
-		split_nav("resize", "k"),
-		split_nav("resize", "l"),
+		-- -- move between split panes
+		-- split_nav("move", "h"),
+		-- split_nav("move", "j"),
+		-- split_nav("move", "k"),
+		-- split_nav("move", "l"),
+		-- -- resize panes
+		-- split_nav("resize", "h"),
+		-- split_nav("resize", "j"),
+		-- split_nav("resize", "k"),
+		-- split_nav("resize", "l"),
 		{
 			mods = "LEADER",
 			key = "-",
@@ -175,7 +175,7 @@ function Keybinds.setup(config)
 				end),
 			}),
 		},
-		{ key = "PageUp", mods = "SHIFT", action = act.ScrollByPage(-0.5) },
+		{ key = "PageUp",   mods = "SHIFT", action = act.ScrollByPage(-0.5) },
 		{ key = "PageDown", mods = "SHIFT", action = act.ScrollByPage(0.5) },
 	}
 	for i = 1, 9 do
