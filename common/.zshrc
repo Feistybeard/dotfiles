@@ -97,6 +97,7 @@ alias f="fd --type f --hidden --exclude .git | fzf | xargs nvim"
 alias ..="cd .."
 alias ....="cd ../.."
 alias rmf="rm -rf"
+alias z="zellij"
 
 
 # shell integration
