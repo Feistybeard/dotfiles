@@ -19,6 +19,11 @@ export EDITOR="nvim"
 export NVIM_TUI_ENABLE_TRUE_COLOR=1
 export VISUAL="code"
 export DOTFILES="$HOME/.dotfiles"
+export ZELLIJ_RUNNER_ROOT_DIR="Dev"
+export ZELLIJ_RUNNER_IGNORE_DIRS="node_modules,target"
+export ZELLIJ_RUNNER_MAX_DIRS_DEPTH="3"
+export ZELLIJ_RUNNER_LAYOUTS_DIR=".config/zellij/layouts"
+export ZELLIJ_RUNNER_BANNERS_DIR=".config/zellij/banners"
 FREETYPE_PROPERTIES="cff:no-stem-darkening=0 autofitter:no-stem-darkening=0"
 
 # plugins
@@ -98,6 +103,8 @@ alias ..="cd .."
 alias ....="cd ../.."
 alias rmf="rm -rf"
 alias z="zellij"
+alias za="zellij attach"
+alias zz="zellij-runner"
 
 
 # shell integration
