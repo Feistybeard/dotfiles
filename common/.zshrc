@@ -24,6 +24,7 @@ export ZELLIJ_RUNNER_IGNORE_DIRS="node_modules,target"
 export ZELLIJ_RUNNER_MAX_DIRS_DEPTH="3"
 export ZELLIJ_RUNNER_LAYOUTS_DIR=".config/zellij/layouts"
 export ZELLIJ_RUNNER_BANNERS_DIR=".config/zellij/banners"
+export HOMEBREW_NO_ANALYTICS=1
 FREETYPE_PROPERTIES="cff:no-stem-darkening=0 autofitter:no-stem-darkening=0"
 
 # plugins
@@ -85,6 +86,10 @@ git_clone_bare() {
   echo "gitdir: ./.bare" > .git
   update_git_origin
 }
+zellij_attach_or_create() {
+    local session_name=${1:-default}
+    zellij attach --create $session_name
+}
 
 # alias
 alias l="eza -l -g --icons"
@@ -102,9 +107,9 @@ alias f="fd --type f --hidden --exclude .git | fzf | xargs nvim"
 alias ..="cd .."
 alias ....="cd ../.."
 alias rmf="rm -rf"
-alias z="zellij"
-alias za="zellij attach"
+alias z="zellij_attach_or_create"
 alias zz="zellij-runner"
+alias :q="exit"
 
 
 # shell integration
