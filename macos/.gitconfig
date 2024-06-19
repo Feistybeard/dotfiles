@@ -1,0 +1,56 @@
+[user]
+	name = Marvan Al Kufai
+	email = alkufai@gmail.com
+	signinkey = /Users/marvan/.ssh/id_ed25519.pub
+	signingkey = /Users/marvan/.ssh/id_ed25519.pub
+[core]
+	editor = vim
+	excludesfile = /Users/marvan/.config/.gitignore
+  pager = less -R
+[init]
+	defaultbranch = main
+[gpg]
+	format = ssh
+[credential "https://github.com"]
+	helper = 
+	helper = !/opt/homebrew/bin/gh auth git-credential
+[credential "https://gist.github.com"]
+	helper = 
+	helper = !/opt/homebrew/bin/gh auth git-credential
+[color]
+	ui = auto
+[commit]
+	gpgsign = true
+[merge]
+	confilictStyle = diff3
+[rebase]
+	instructionFormat = (%an <%ae>) %s
+[tag]
+	gpgsign = true
+[gpg "ssh"]
+	defaultKeyCommand = ssh-add -L
+[alias]
+	  # list branches ordered by change time
+    br = "!git for-each-ref --format='%(committerdate:short),%(authorname),%(refname:short)' --sort=committerdate refs/heads/ | column -t -s ','"
+    bra = branch -a
+    ci = commit
+    co = checkout
+    cim = commit -m
+    # Show minimal diffs instead of whole lines changed and highlight trailing whitespace in diffs
+    df = diff --color-words=. --ws-error-highlight=new,old
+    dfs = diff --staged --ws-error-highlight=new,old
+    # Find a string but omit strings with lendth over 400 chars
+    find = "!f() { str=${@}; echo $str; git grep -E -e$str --and --not -e '.{400}'; }; f"
+    i = update-index --assume-unchanged
+    l = log --oneline --graph --decorate
+    lg = log -p
+    ls = ls-files
+    pom = push origin main
+    # push current branch
+    po = "!git push --set-upstream origin \"$(git rev-parse --abbrev-ref HEAD)\""
+    st = status
+    # stash unstaged only
+    stuo = "!f() { git stash save --keep-index "Unstaged only" && git stash save "Staged only" && git stash pop && git add . --all && git status; }; f"
+    # uncommit last
+    unc = reset --soft HEAD^
+    unstage = reset HEAD --
