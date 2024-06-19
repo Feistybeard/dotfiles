@@ -70,7 +70,7 @@ non-empty-workspaces-root-containers-layout-on-startup = 'smart'
 # See: https://nikitabobko.github.io/AeroSpace/commands.html#exec-and-forget
 # alt-enter = 'exec-and-forget open -n /System/Applications/Utilities/Terminal.app'
 
-
+cmd-h = []
 cmd-alt-ctrl-f = 'fullscreen'
 # See: https://nikitabobko.github.io/AeroSpace/commands.html#layout
 cmd-alt-ctrl-slash = 'layout tiles horizontal vertical'
