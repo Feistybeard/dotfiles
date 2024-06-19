@@ -25,6 +25,14 @@ export ZELLIJ_RUNNER_MAX_DIRS_DEPTH="3"
 export ZELLIJ_RUNNER_LAYOUTS_DIR=".config/zellij/layouts"
 export ZELLIJ_RUNNER_BANNERS_DIR=".config/zellij/banners"
 export HOMEBREW_NO_ANALYTICS=1
+export FZF_DEFAULT_OPTS=$FZF_DEFAULT_OPTS'
+  --color=fg:-1,fg+:#33c31f,bg:-1,bg+:#070707
+  --color=hl:#63995a,hl+:#33c31f,info:#424242,marker:#af5fff
+  --color=prompt:#ffffff,spinner:#af5fff,pointer:#5eff6c,header:#87afaf
+  --color=border:#262626,label:#aeaeae,query:#d9d9d9
+  --border="rounded" --border-label="" --preview-window="border-rounded" --prompt="> "
+  --marker=">" --pointer="◆" --separator="─" --scrollbar="│"
+  --height=60% ' 
 FREETYPE_PROPERTIES="cff:no-stem-darkening=0 autofitter:no-stem-darkening=0"
 
 # plugins
@@ -111,9 +119,7 @@ alias z="zellij_attach_or_create"
 alias zz="zellij-runner"
 alias :q="exit"
 
-
 # shell integration
-
 # eval correct Homebrew path
 [[ "$OSTYPE" == "darwin"* ]] && eval "$(/opt/homebrew/bin/brew shellenv)"
 [[ "$OSTYPE" == "linux-gnu"* ]] && eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
