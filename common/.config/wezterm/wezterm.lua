@@ -10,6 +10,10 @@ if wezterm.config_builder then
 	config = wezterm.config_builder()
 end
 
+-- local theme = require("themes.pine").main
+-- config.colors = theme.colors()
+config.color_scheme = "Modus-Vivendi-Tritanopia"
+
 keybinds.setup(config)
 plugins.setup(config)
 events.setup(config)
