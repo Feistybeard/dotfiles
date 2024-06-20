@@ -11,6 +11,16 @@ fi
 
 source "${ZINIT_HOME}/zinit.zsh"
 
+# path exports
+additional_paths=(
+  "$HOME/.config/scripts/fuz/"
+)
+for dir in "${additional_paths[@]}"; do
+  if [[ -d $dir ]]; then
+    export PATH="$PATH:$dir"
+  fi
+done
+
 # exports
 export LANG=en_US.UTF-8
 export TERM=xterm-256color
@@ -25,6 +35,7 @@ export ZELLIJ_RUNNER_MAX_DIRS_DEPTH="3"
 export ZELLIJ_RUNNER_LAYOUTS_DIR=".config/zellij/layouts"
 export ZELLIJ_RUNNER_BANNERS_DIR=".config/zellij/banners"
 export HOMEBREW_NO_ANALYTICS=1
+export FUZ_EDITOR="nvim"
 export FZF_DEFAULT_OPTS=$FZF_DEFAULT_OPTS'
   --color=fg:-1,fg+:#33c31f,bg:-1,bg+:#070707
   --color=hl:#63995a,hl+:#33c31f,info:#424242,marker:#af5fff
@@ -118,6 +129,9 @@ alias rmf="rm -rf"
 alias z="zellij_attach_or_create"
 alias zz="zellij-runner"
 alias :q="exit"
+# search obsidian notes with fuz
+[[ "$OSTYPE" == "darwin"* ]] && alias fuz='$HOME/.config/scripts/fuz/fuz -p "$HOME/Documents/Notes/"'
+
 
 # shell integration
 # eval correct Homebrew path
