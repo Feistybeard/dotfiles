@@ -1,0 +1,444 @@
+#!/bin/bash
+#
+# Fuz: Terminal-based, file fuzzy finder for ultra-fast text search. Integrated with vim
+# Project homepage: https://github.com/Magnushhoie/fuz
+
+# 1. section: global constants
+set -o nounset
+set -o pipefail
+if [[ ${TRACE-0} == "1" ]]; then
+  set -o xtrace
+fi
+
+# Script parameters
+FUZ_SCRIPT_DIR="$(
+  cd "$(dirname "${BASH_SOURCE[0]}")" || exit 1 >/dev/null
+  pwd -P
+)"
+
+FUZ_SCRIPT_PATH="$(realpath "${BASH_SOURCE[0]}")"
+declare FUZ_SCRIPT_DIR
+declare FUZ_SCRIPT_PATH
+declare FUZ_SCRIPTS_FILE="$FUZ_SCRIPT_DIR/fuz_scripts.sh"
+declare FUZ_SCRIPTS_FILE="$FUZ_SCRIPT_DIR/fuz_scripts.sh"
+
+# FZF GUI parameters
+export FZF_CTRL_T_OPTS="--preview 'bat --color=always --line-range :500 {}'"
+export FZF_DEFAULT_OPTS="--reverse --inline-info --ansi"
+
+# 2. section: functions
+function usage() {
+  cat <<EOF #
+USAGE:
+  fuz [options] <FILENAME and/or SEARCH-TERMS>
+
+Fuz interactively fuzzy searches a directory
+and opens selected files at search result.
+
+Use --edit to list files and edit in vim,
+or --open for system default app
+
+Project homepage: https://github.com/Magnushhoie/fuz
+
+EXAMPLES:
+- Search text from default path
+    fuz
+
+- Search specific path
+    fuz --path DIRECTORY
+
+- Search filenames to edit with vim:
+    fuz --edit
+
+- Open matches with system default text editor
+    fuz --open
+
+KEY BINDINGS:
+  CTRL+E             Open in vim
+  CTRL+L             View with less
+  CTRL+J             MOVE down
+  CTRL+K             MOVE up
+
+ALTERNATIVE TERMINAL EDITOR:
+  # add to .bashrc/.zshrc (currently supports neovim, macvim or vim):
+  export FUZ_EDITOR=nvim
+
+OPTIONS:
+  --setup            Set fuz default search directory in .zsh/.bashrc
+  -p, --path         Directory to search
+  -o, --open         Open search directory or file with system default application
+  -e, --edit         Open file with vim editor (instead of 'less'), enables --names option
+  -n, --names        Only show filenames
+  -c, --create       Create new file in search directory: --create <FILENAME>
+  --max-depth        Max search depth (5)
+  --max-lines        Max lines read per file (50000)
+  --max-size         Max file-size to search (1M)
+  --fuzzy-search     Enable fuzzy instead of exact search
+  -d, --dir-search   Search directories
+  --no-ignore        Search files ignored by .gitignore
+  --sorttime         Sort files by date modified, preserve line order (single threaded, slow)
+  --vimsearch        Search lines and open in vim
+  --dir              Print and open search directory
+  -h, --help         Print this help and exit
+
+EOF
+  exit 0
+}
+
+msg() {
+  echo >&2 -e "$*"
+}
+
+die() {
+  local msg=$1
+  local code=${2-1} # default exit status 1
+  msg "$msg"
+  exit "$code"
+}
+
+parse_params() {
+  # default values of variables set from params
+  edit='0'            # --edit -e
+  open_system='0'     # --open -o
+  create_file='0'     # --create_file -c
+  maxdepth='5'        # --maxdepth
+  maxlines='50000'    # --maxlines
+  maxsize='1M'        # --maxsize
+  names='0'           # --names (n)
+  printdir='0'        # --dir
+  fuzzysearch='-e'    # --fuzzy-search -f
+  setup="0"           # --setup
+  dir="$(realpath .)" # --path -p
+  rg_ignore=""        # default ripgrep ignores .gitignore
+  directorysearch=FALSE
+
+  while :; do
+    case "${1-}" in
+      -h | --help) usage ;;
+      -e | --edit) edit='1' names='1' rg_sort='--sortr modified' fzf_sort='--no-sort' ;;
+      -o | --open) open_system='1' ;;
+      -c | --create) create_file='1' ;;
+      -n | --names) names='1' ;;
+      -f | --fuzzy-search) fuzzysearch='' ;;
+      -d | --dir-search) directorysearch='TRUE' ;;
+      --dir) printdir='1' ;;
+      --no-ignore) rg_ignore='--no-ignore' ;;
+      --vimsearch) edit='1' names='0' ;;
+      --sorttime) rg_sort='--sortr modified' fzf_sort='--no-sort' ;;
+      --setup) setup='1' ;;
+      -d | --max-depth)
+        maxdepth="${2-}"
+        shift
+        ;;
+      -m | --max-lines)
+        maxlines="${2-}"
+        shift
+        ;;
+      -s | --max-size)
+        maxsize="${2-}"
+        shift
+        ;;
+      -p | --path)
+        dir="$(realpath "${2-.}")"
+        shift
+        ;;
+      -?*) die "Unknown option: $1" ;;
+      *) break ;;
+    esac
+    shift
+  done
+
+  #query="${*-}"
+  query="${*-}"
+
+  return 0
+}
+
+# all progs need to be given as parameters
+function _check_required_programs() {
+  for p in "${@}"; do
+    hash "${p}" 2>&- \
+      || {
+        msg "Please install required program \"${p}\" and put in PATH. See https://github.com/Magnushhoie/fuz"
+        msg """# 1. MacOS, using brew: https://brew.sh/
+brew install fzf rg bat
+
+# 2. Any OS, using conda: https://conda.io/docs/user-guide/install/
+conda install -c conda-forge fzf ripgrep bat
+
+# 3. Ubuntu
+sudo apt-get install fzf ripgrep
+sudo apt install bat
+mkdir -p ~/.local/bin
+ln -s /usr/bin/batcat ~/.local/bin/bat"""
+        exit 1
+      }
+  done
+}
+
+#######################################
+# Adds aliases fuz with new search path .bashrc/.zshrc
+# Globals:
+#   file: FUZ_SCRIPT_PATH
+# Arguments:
+#   None
+#######################################
+function add_aliases_zsh_bashrc() {
+  # Set default search directory
+  read -rp $''"Set fuz search directory below (default $FUZ_SCRIPT_DIR/notes/):"$'\n' search_directory
+  FUZ_DIR=$(realpath "${search_directory:-"$FUZ_SCRIPT_DIR"/notes}")
+  echo -e "New directory: $FUZ_DIR"
+
+  # Continue?
+  read -rp "fuz will now by default search the above directory. Confirm with y/n"$'\n' -n 1 -r
+  if [[ $REPLY =~ ^[Nn]$ ]]; then
+    exit 0
+  fi
+
+  # Add aliases to .bashrc / .zshrc
+  echo -e "\nAdding aliases to .bashrc and ~/.zshrc ..."
+  LINE1="alias fuz='$FUZ_SCRIPT_PATH --path \"$FUZ_DIR\"'"
+  LINE2="alias fz='fuz --sorttime'"
+  LINE3="alias fze='fuz --edit'"
+  LINE4="alias fzd='fuz --dir-search'"
+
+  for LINE in "$LINE1" "$LINE2" "$LINE3" "$LINE4"; do
+    echo "$LINE"
+    for FILE in "$HOME"/.bashrc "$HOME"/.zshrc; do
+      if [[ -f "$FILE" ]]; then
+        grep -qF -- "$LINE" "$FILE" || echo -e "$LINE" >>"$FILE"
+      fi
+    done
+  done
+
+  echo -e "\nPlease restart your shell for changes to take effect, then run fuz"
+}
+
+#######################################
+# Open file with less or vim (-e) at selected linenumber
+# Globals:
+#   file: File fullpath
+#   linematch: Line number
+#   edit: Flag for less (0) or vim (1)
+#   open_system: Flag (-o) for opening with system default program
+# Arguments:
+#   None
+#######################################
+function _open_filematch() {
+
+  # Return file with filenumber (can copy-paste open at line with vim)
+  msg "\"$file\"" "+${linematch:-0}"
+
+  # If open system editor (-o) flag, use open (also valid for directories)
+  if [[ $open_system -eq 1 ]]; then
+
+    # Use open (MacOS) if present, else xdg-open (Linux)
+    if [[ -z $(command -v xdg-open) ]]; then
+      open "$file"
+
+    else
+      xdg-open "$file"
+    fi
+
+    exit 0
+  fi
+
+  # If valid file, open with vim if edit (-e) flag, else less
+  if [[ -f $file ]]; then
+
+    if [[ $edit == 1 ]]; then
+      # Vim mouse-mode, start at top, softwrap, no numbering/highlight, clipboard copy-paste
+      "${FUZ_EDITOR:-vim}" \
+        +":set mouse=a" +":silent! normal g;" \
+        +":set number nohlsearch" \
+        +":set wrap linebreak nolist" \
+        +":set textwidth=0 showbreak= colorcolumn= conceallevel=0 " \
+        +":set clipboard^=unnamed,unnamedplus" \
+        +"${linematch:-0}" +"normal zt" \
+        "$file"
+
+    else
+      # Less w/ colors, highlight match, insensitive+incremental search, enable CTRL+C
+      lineopen=$((${linematch:-0} >= 1 ? ${linematch:-0} - 1 : 0))
+      bat "$file" --color=always --style plain \
+        --highlight-line "${linematch:-0}" \
+        --pager="less -R +${lineopen:-0}g --ignore-case"
+    fi
+  fi
+  exit 0
+}
+
+function main() {
+
+  # Check in path: fzf, ripgrep and bat
+  _check_required_programs fzf rg bat realpath
+
+  # Parse parameters
+  parse_params "$@"
+
+  # fuz --setup: Add aliases to .zshrc/.bashrc
+  if [[ $setup -eq 1 ]]; then
+    add_aliases_zsh_bashrc
+    exit 0
+  fi
+
+  # fuz --dir: Open search directory (and print path)
+  if [[ $printdir -eq 1 ]]; then
+    echo "$dir"
+    open "$dir"
+    exit 0
+  fi
+
+  # Main program
+  cd "$dir" || exit 1
+
+  # fuz -c [filename]: Create new file at $dir
+  if [[ $create_file -eq 1 ]]; then
+    if [[ -z $query ]]; then
+      die "No filename provided to --create [FILENAME]"
+    fi
+    file="$dir/$query"
+    msg "$dir/$file"
+
+    # Touch and open with system if --open flag, else use vim
+    if [[ $edit -eq 1 ]]; then
+      mkdir -p "$(dirname "$file")"
+      "${FUZ_EDITOR:-vim}" "$file"
+    else
+      mkdir -p "$(dirname "$file")"
+      touch "$file"
+      open "$file"
+    fi
+    exit 0
+  fi
+
+  # fuz [filename]: If only 1 file is found (n=2 levels down), open file
+  # Find files matching [filename], 2 levels deep, stop after 2nd match
+  # Null terminator trick for handling filepaths with whitespaces
+  # https://unix.stackexchange.com/questions/75186/how-to-do-head-and-tail-on-null-delimited-input-in-bash
+  files=()
+  while read -r -d $'\0'; do
+    files+=("$REPLY")
+  done < <(
+    find . -iname "*$query*" -maxdepth "$maxdepth" -print0 2>/dev/null \
+      | tr '\0\n' '\n\0' | head -n 2 | tr '\0\n' '\n\0'
+  ) || exit 1
+
+  # If found single match, open file.
+  if [[ ${#files[@]} -eq 1 ]]; then
+    file=$(realpath "${files[0]}")
+
+    _open_filematch
+  fi
+
+  # fuz -d: Search directories, cd to match
+  # Ignore hidden directories
+  #        --bind "ctrl-e:become(exec \"${BASH_SOURCE[0]}\" --names -p {})" \
+  #        --bind "ctrl-l:become(exec \"${BASH_SOURCE[0]}\" -p {})" \
+  #      | cut -c 3- \
+  if [[ $directorysearch == TRUE ]]; then
+    DIR=$(
+      ( echo "$dir" &&
+        find . -type d -not -path '*/.*' \
+      -mindepth 0 -maxdepth "$maxdepth" 2>/dev/null \
+        | sed 's#./##' \
+      ) \
+        | fzf --query "${query-}" \
+          --header-lines=1 \
+          --header "Folders: Ctrl+U up, Ctrl+I in, Ctrl+O open, Ctrl+F toggle, " \
+          --bind "ctrl-e:become(exec \"${BASH_SOURCE[0]}\" --names -p {})+abort" \
+          --bind "ctrl-l:become(exec \"${BASH_SOURCE[0]}\" -p {})+abort" \
+          --bind "ctrl-f:become(exec \"${BASH_SOURCE[0]}\" --names --path .)" \
+          --bind "ctrl-i:become(exec \"${BASH_SOURCE[0]}\" --dir-search --path {})" \
+          --bind "ctrl-u:become(exec \"${BASH_SOURCE[0]}\" --dir-search --path ../)" \
+          --bind "ctrl-o:execute(open {})" \
+          --bind "enter:execute(exec \"${BASH_SOURCE[0]}\" --names --path {})" \
+          --preview="find {} -maxdepth 1 -not -path '*/.*' | tail -n +1" \
+    ) || if [[ $? -eq 130 ]]; then exit 1; fi # Exit if Ctrl + C (FZF error code 130)
+    # If not empty
+
+    # exec "${BASH_SOURCE[0]}" --names -p "$DIR" || exit 1
+
+    #echo cd "$DIR"
+    #open "$DIR" || exit 1
+    exit 0
+  fi
+
+  # fuz -e: Search filenames, open with vim
+  # Uses ripgrep and fzf exact search.
+  # FZF auto-selects if single match
+  # Bindings: Ctrl + E to edit with vim, Ctrl + L to open with less
+            # --bind "enter:become(source $FUZ_SCRIPTS_FILE && _fze_write "{}" < /dev/tty > /dev/tty)" \
+  if [[ $names == 1 ]]; then
+    file=$(
+      ( echo "$dir" &&
+      rg "^" --max-columns 250 --max-columns-preview --files-with-matches \
+        --max-depth "$maxdepth" --max-filesize "$maxsize" \
+        ${rg_sort:-} ${rg_ignore:-} \
+        2>/dev/null \
+      ) \
+        | fzf "$fuzzysearch" --select-1 --query "${query-}" \
+          ${fzf_sort:-} \
+          --header-lines=1 \
+          --header 'Files: CTRL+E edit, CTRL+L view, Ctrl+O open, Ctrl+F toggle' \
+          --bind "ctrl-e:execute(source $FUZ_SCRIPTS_FILE && _fze_write "{}" < /dev/tty > /dev/tty)" \
+          --bind "ctrl-l:execute(source $FUZ_SCRIPTS_FILE && _fze_read "{}" < /dev/tty > /dev/tty)" \
+          --bind "ctrl-f:become(exec \"${BASH_SOURCE[0]}\" --path .)+abort" \
+          --bind "ctrl-i:become(exec \"${BASH_SOURCE[0]}\" --dir-search --path .)" \
+          --bind "ctrl-u:become(exec \"${BASH_SOURCE[0]}\" --dir-search --path ../)" \
+          --bind "ctrl-o:execute(open {})" \
+          --bind "enter:execute(source $FUZ_SCRIPTS_FILE && _fze_write "{}" < /dev/tty > /dev/tty)+abort" \
+          --preview="bat --color=always {}"
+    ) || if [[ $? -eq 130 ]]; then exit 1; fi # Exit if Ctrl + C (FZF error code 130)
+    file="$dir/$file"
+
+    # Open with vim or less
+    _open_filematch
+
+  # fuz: Search file-contents, open with less
+  # Uses ripgrep with line numbers + filenames. Ignores binary files and .git
+  # FZF shows file-content previews. Auto-selects if single match
+  # Hack: $fuzzysearch unquoted to allow for empty string (fzf breaks with "" as input)
+  # rg search unicode letter \p{Letter}: https://docs.rs/regex/1.10.4/regex/#syntax
+  # Bindings: Ctrl + E to edit with vim, Ctrl + L to open with less
+          # --bind "enter:become(source $FUZ_SCRIPTS_FILE && _fz_read \"$dir\" "{}" < /dev/tty > /dev/tty)" \
+          # --bind "ctrl-f:become(exec \"${BASH_SOURCE[0]}\" --names --path .)" \
+  else
+    filematch=$(
+      ( echo "$dir" &&
+      rg ".*\p{Letter}" --max-columns 250 --max-columns-preview \
+        --color=always --no-heading --with-filename --line-number \
+        --max-depth "$maxdepth" --max-filesize "$maxsize" --max-count "$maxlines" \
+        ${rg_sort:-} ${rg_ignore:-} \
+        2>/dev/null \
+      ) \
+        | LC_ALL=C sed "s;$dir/;;" \
+        | fzf "${fuzzysearch}" --select-1 --query "${query-}" \
+          ${fzf_sort:-} \
+          --header-lines=1 \
+          --header 'Text: CTRL+E edit, CTRL+L view, Ctrl+O open, Ctrl+F toggle' \
+          --bind "ctrl-e:execute(source $FUZ_SCRIPTS_FILE && _fz_write \"$dir\" "{}" < /dev/tty > /dev/tty)" \
+          --bind "ctrl-l:execute(source $FUZ_SCRIPTS_FILE && _fz_read \"$dir\" "{}" < /dev/tty > /dev/tty)" \
+          --bind "ctrl-f:become(exec \"${BASH_SOURCE[0]}\" --dir-search --path .)+abort" \
+          --bind "ctrl-i:become(exec \"${BASH_SOURCE[0]}\" --dir-search --path .)" \
+          --bind "ctrl-u:become(exec \"${BASH_SOURCE[0]}\" dir-search --path ../)" \
+          --bind "ctrl-o:execute(source $FUZ_SCRIPTS_FILE && _fz_open \"$dir\" "{}" < /dev/tty > /dev/tty)" \
+          --bind "enter:execute(source $FUZ_SCRIPTS_FILE && _fz_read \"$dir\" "{}" < /dev/tty > /dev/tty)+abort" \
+          --preview="source $FUZ_SCRIPTS_FILE \
+        ; cd \"$dir\"; string2arg \"$dir/\"/{}"
+    ) || if [[ $? -eq 130 ]]; then exit 1; fi # Exit if Ctrl + C (FZF error code 130)
+
+    # Extract filename and linenumber from match
+    file=$(cut -d":" -f1 <<<"$filematch")
+    file="$dir/$file"
+    linematch=$(cut -d":" -f2 <<<"$filematch")
+
+    # Open with vim or less
+    _open_filematch
+  fi
+
+  exit 0
+}
+
+# Run program
+main "$@"
