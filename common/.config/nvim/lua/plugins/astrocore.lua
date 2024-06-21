@@ -1,68 +1,74 @@
-if true then return {} end -- WARN: REMOVE THIS LINE TO ACTIVATE THIS FILE
-
--- AstroCore provides a central place to modify mappings, vim options, autocommands, and more!
--- Configuration documentation can be found with `:h astrocore`
--- NOTE: We highly recommend setting up the Lua Language Server (`:LspInstall lua_ls`)
---       as this provides autocomplete and documentation while editing
-
 ---@type LazySpec
 return {
   "AstroNvim/astrocore",
   ---@type AstroCoreOpts
   opts = {
-    -- Configure core features of AstroNvim
-    features = {
-      large_buf = { size = 1024 * 256, lines = 10000 }, -- set global limits for large files for disabling features like treesitter
-      autopairs = true, -- enable autopairs at start
-      cmp = true, -- enable completion at start
-      diagnostics_mode = 3, -- diagnostic mode on start (0 = off, 1 = no signs/virtual text, 2 = no virtual text, 3 = on)
-      highlighturl = true, -- highlight URLs at start
-      notifications = true, -- enable notifications at start
-    },
-    -- Diagnostics configuration (for vim.diagnostics.config({...})) when diagnostics are on
-    diagnostics = {
-      virtual_text = true,
-      underline = true,
-    },
-    -- vim options can be configured here
     options = {
       opt = { -- vim.opt.<key>
-        relativenumber = true, -- sets vim.opt.relativenumber
-        number = true, -- sets vim.opt.number
-        spell = false, -- sets vim.opt.spell
-        signcolumn = "yes", -- sets vim.opt.signcolumn to yes
-        wrap = false, -- sets vim.opt.wrap
+        scrolloff = 10,
+        sidescrolloff = 8,
+        termguicolors = true,
+        ignorecase = true,
+        smartcase = true,
+        conceallevel = 2,
+        tabstop = 4,
+        softtabstop = 4,
+        shiftwidth = 4,
       },
       g = { -- vim.g.<key>
-        -- configure global vim variables (vim.g)
         -- NOTE: `mapleader` and `maplocalleader` must be set in the AstroNvim opts or before `lazy.setup`
         -- This can be found in the `lua/lazy_setup.lua` file
       },
     },
-    -- Mappings can be configured through AstroCore as well.
-    -- NOTE: keycodes follow the casing in the vimdocs. For example, `<Leader>` must be capitalized
     mappings = {
       -- first key is the mode
       n = {
-        -- second key is the lefthand side of the map
+        -- center screen after half page up/down and search
+        ["<C-u>"] = { "<C-u>zz" },
+        ["<C-d>"] = { "<C-d>zz" },
+        ["n"] = { "nzzzv" },
+        ["N"] = { "Nzzzv" },
 
-        -- navigate buffer tabs
-        ["]b"] = { function() require("astrocore.buffer").nav(vim.v.count1) end, desc = "Next buffer" },
-        ["[b"] = { function() require("astrocore.buffer").nav(-vim.v.count1) end, desc = "Previous buffer" },
-
-        -- mappings seen under group name "Buffer"
-        ["<Leader>bd"] = {
-          function()
-            require("astroui.status.heirline").buffer_picker(
-              function(bufnr) require("astrocore.buffer").close(bufnr) end
-            )
-          end,
-          desc = "Close buffer from tabline",
+        ["<Leader>oc"] = {
+          function() require("obsidian").util.toggle_checkbox() end,
+          desc = "Toggle checkbox",
+        },
+        ["<Leader>oo"] = { ":cd $HOME/Documents/Notes<CR>", desc = "Change to notes directory" },
+        -- convert note to template and remove leading white space
+        ["<Leader>on"] = {
+          ":ObsidianTemplate note<cr> :lua vim.cmd([[1,/^\\S/s/^\\n\\{1,}//]])<cr>",
+          desc = "Convert to template",
+        },
+        -- strip date from note title and replace dashes with spaces
+        -- must have cursor on title
+        ["<Leader>of"] = { ":s/\\(# \\)[^_]*_/\\1/ | s/-/ /g<cr>", desc = "Format note title" },
+        -- search for files in full vault
+        ["<Leader>os"] = {
+          ':Telescope find_files search_dirs={"$HOME/Documents/Notes"}<cr>',
+          desc = "Search notes",
+        },
+        ["<Leader>oz"] = {
+          ':Telescope live_grep search_dirs={"$HOME/Documents/Notes"}<cr>',
+          desc = "Search notes content",
+        },
+        -- move file in current buffer to zettelkasten folder
+        ["<Leader>ok"] = {
+          ":!mv '%:p' $HOME/Documents/Notes/zettelkasten/<cr>:bd<cr>",
+          desc = "Move to Zettelkasten",
+        },
+        -- delete file in current buffer
+        ["<Leader>odd"] = {
+          ":!rm '%:p'<cr>:bd<cr>",
+          desc = "Delete note",
+        },
+        ["<Leader>op"] = {
+          ":MarkdownPreviewToggle<cr>",
+          desc = "Markdown preview toggle(in browser)",
         },
 
-        -- tables with just a `desc` key will be registered with which-key if it's installed
-        -- this is useful for naming menus
-        -- ["<Leader>b"] = { desc = "Buffers" },
+        -- which key mappings
+        ["<Leader>a"] = { desc = "Ai" },
+        ["<Leader>o"] = { desc = "Obsidian" },
 
         -- setting a mapping to false will disable it
         -- ["<C-S>"] = false,
