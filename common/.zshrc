@@ -13,7 +13,7 @@ source "${ZINIT_HOME}/zinit.zsh"
 
 # path exports
 additional_paths=(
-  "$HOME/.config/scripts/fuz/"
+  # "$HOME/.cargo/bin"
 )
 for dir in "${additional_paths[@]}"; do
   if [[ -d $dir ]]; then
@@ -22,6 +22,7 @@ for dir in "${additional_paths[@]}"; do
 done
 
 # exports
+export OBSIDIAN_NOTES="$HOME/Documents/Notes"
 export LANG=en_US.UTF-8
 export TERM=xterm-256color
 export "MICRO_TRUECOLOR=1"
@@ -35,7 +36,6 @@ export ZELLIJ_RUNNER_MAX_DIRS_DEPTH="3"
 export ZELLIJ_RUNNER_LAYOUTS_DIR=".config/zellij/layouts"
 export ZELLIJ_RUNNER_BANNERS_DIR=".config/zellij/banners"
 export HOMEBREW_NO_ANALYTICS=1
-export FUZ_EDITOR="nvim"
 export FZF_DEFAULT_OPTS=$FZF_DEFAULT_OPTS'
   --color=fg:-1,fg+:#33c31f,bg:-1,bg+:#070707
   --color=hl:#63995a,hl+:#33c31f,info:#424242,marker:#af5fff
@@ -43,7 +43,7 @@ export FZF_DEFAULT_OPTS=$FZF_DEFAULT_OPTS'
   --color=border:#262626,label:#aeaeae,query:#d9d9d9
   --border="rounded" --border-label="" --preview-window="border-rounded" --prompt="> "
   --marker=">" --pointer="◆" --separator="─" --scrollbar="│"
-  --height=60% ' 
+  --height=60% '
 FREETYPE_PROPERTIES="cff:no-stem-darkening=0 autofitter:no-stem-darkening=0"
 
 # plugins
@@ -120,6 +120,7 @@ alias lg="eza -G --icons"
 alias llg="eza -G --icons -a"
 alias ls="ls --color"
 alias vim="nvim"
+alias v="vim"
 alias m="micro"
 alias c="clear"
 alias cat="bat"
@@ -132,9 +133,9 @@ alias rmf="rm -rf"
 alias z="zellij_attach_or_create"
 alias zz="zellij-runner"
 alias :q="exit"
-# search obsidian notes with fuz
-[[ "$OSTYPE" == "darwin"* ]] && alias fuz='$HOME/.config/scripts/fuz/fuz -p "$HOME/Documents/Notes/"'
-
+alias oo='cd $OBSIDIAN_NOTES'
+alias of='fuz -p $OBSIDIAN_NOTES'
+alias or='vim $OBSIDIAN_NOTES/inbox/*.md'
 
 # shell integration
 # eval correct Homebrew path
