@@ -1,4 +1,4 @@
-PATH=$HOME/bin:$HOME/.local/bin:/usr/local/bin:$PATH
+export PATH=$HOME/bin:$HOME/.local/bin:/usr/local/bin:$PATH
 
 # folder to store zinit and plugins
 ZINIT_HOME="${XDG_DATA_HOME:-${HOME}/.local/share}/zinit/zinit.git"
@@ -11,9 +11,13 @@ fi
 
 source "${ZINIT_HOME}/zinit.zsh"
 
+eval "$(mise activate zsh)"
+eval "$(fzf --zsh)"
+eval "$(zoxide init --cmd cd zsh)"
+
 # path exports
 additional_paths=(
-  # "$HOME/.cargo/bin"
+  "$HOME/.cargo/bin"
 )
 for dir in "${additional_paths[@]}"; do
   if [[ -d $dir ]]; then
@@ -142,6 +146,3 @@ alias or='vim $OBSIDIAN_NOTES/inbox/*.md'
 [[ "$OSTYPE" == "darwin"* ]] && eval "$(/opt/homebrew/bin/brew shellenv)"
 [[ "$OSTYPE" == "linux-gnu"* ]] && eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
 
-eval "$(mise activate zsh)"
-eval "$(fzf --zsh)"
-eval "$(zoxide init --cmd cd zsh)"
