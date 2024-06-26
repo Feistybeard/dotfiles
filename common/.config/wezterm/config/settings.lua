@@ -9,12 +9,11 @@ system_name = system_name:gsub("%s+", "")
 function Settings.setup(config)
 	config.leader = { key = "Space", mods = "SHIFT", timeout_milliseconds = 1000 }
 	config.tab_max_width = 60
-	-- config.color_scheme = "Hardcore"
-	-- config.color_scheme = "Tokyo Night"
+	config.color_scheme = "Modus-Vivendi-Tritanopia"
 	config.font = wezterm.font("JetBrainsMono Nerd Font")
 	config.font_size = 16
 
-	config.window_background_opacity = 0.98
+	config.window_background_opacity = 0.75
 	if system_name == "Darwin" then
 		config.window_decorations = "RESIZE"
 	end
@@ -40,10 +39,10 @@ function Settings.setup(config)
 		font_size = 9,
 	}
 	config.window_padding = {
-		left = 0,
-		right = 0,
-		top = 0,
-		bottom = 0,
+		left = 30,
+		right = 30,
+		top = 40,
+		bottom = 40,
 	}
 
 	config.max_fps = 120
