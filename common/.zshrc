@@ -1,4 +1,18 @@
+# path exports
 export PATH=$HOME/bin:$HOME/.local/bin:/usr/local/bin:$PATH
+additional_paths=(
+  "$HOME/.cargo/bin"
+)
+for dir in "${additional_paths[@]}"; do
+  if [[ -d $dir ]]; then
+    export PATH="$PATH:$dir"
+  fi
+done
+export XDG_CACHE_HOME="$HOME/.cache"
+export XDG_CONFIG_HOME="$HOME/.config"
+export XDG_DATA_HOME="$HOME/.local/share"
+export XDG_PICTURES_DIR="$HOME/Pictures"
+export XDG_STATE_HOME="$HOME/.local/state"
 
 # folder to store zinit and plugins
 ZINIT_HOME="${XDG_DATA_HOME:-${HOME}/.local/share}/zinit/zinit.git"
@@ -15,17 +29,8 @@ eval "$(mise activate zsh)"
 eval "$(fzf --zsh)"
 eval "$(zoxide init --cmd cd zsh)"
 
-# path exports
-additional_paths=(
-  "$HOME/.cargo/bin"
-)
-for dir in "${additional_paths[@]}"; do
-  if [[ -d $dir ]]; then
-    export PATH="$PATH:$dir"
-  fi
-done
-
 # exports
+export MANPAGER='nvim +Man!'
 export OBSIDIAN_NOTES="$HOME/Documents/Notes"
 export LANG=en_US.UTF-8
 export TERM=xterm-256color
