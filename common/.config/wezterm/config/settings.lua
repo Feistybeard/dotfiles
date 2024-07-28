@@ -12,7 +12,7 @@ local colors = {
 
 function Settings.setup(config)
 	config.leader = { key = "Space", mods = "SHIFT", timeout_milliseconds = 1000 }
-	config.color_scheme = "Modus-Vivendi-Tritanopia"
+	-- config.color_scheme = "Modus-Vivendi-Tritanopia"
 	-- config.font = wezterm.font("JetBrainsMono Nerd Font")
 	config.window_frame = {
 		font = wezterm.font("Hasklug Nerd Font Mono", { weight = "DemiBold" }),
@@ -32,7 +32,7 @@ function Settings.setup(config)
 			font = wezterm.font("Hasklug Nerd Font Mono", { weight = "DemiBold", style = "Italic" }),
 		},
 	}
-	config.font_size = 16
+	config.font_size = 17
 
 	config.underline_position = -6
 	config.underline_thickness = "250%"

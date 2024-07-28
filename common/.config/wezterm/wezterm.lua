@@ -15,4 +15,6 @@ plugins.setup(config)
 events.setup(config)
 settings.setup(config)
 
+config.colors = require("themes.cyberdream")
+config.window_background_image = "/home/marvan/.config/kitty/bg-blurred-darker.png"
 return config
