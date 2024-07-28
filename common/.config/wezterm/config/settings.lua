@@ -37,7 +37,7 @@ function Settings.setup(config)
 	config.underline_position = -6
 	config.underline_thickness = "250%"
 
-	config.window_background_opacity = 0.75
+	config.window_background_opacity = 0.86
 	config.macos_window_background_blur = 20
 
 	if system_name == "Darwin" then
