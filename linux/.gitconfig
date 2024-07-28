@@ -5,8 +5,8 @@
 	signingkey = /home/marvan/.ssh/id_ed25519.pub
 [core]
 	editor = vim
-	excludesfile = /home/marvan/.config/.gitignore
-  pager = less -R
+	excludesFile = /home/marvan/.config/.gitignore
+    pager = less -R
 [init]
 	defaultbranch = main
 [gpg]
