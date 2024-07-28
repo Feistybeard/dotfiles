@@ -1,7 +1,10 @@
 # yaml-language-server: $schema=https://raw.githubusercontent.com/jesseduffield/lazygit/master/schema/config.json
 # cyberdream theme for lazygit
 gui:
+  nerdFontsVersion: "3"
   border: rounded
+  mouseEvents: false
+
   theme:
     activeBorderColor:
       - "#5ef1ff"
@@ -22,3 +25,8 @@ gui:
       - "#ffbd5e"
     defaultFgColor:
       - "#ffffff"
+git:
+  parseEmoji: true
+  paging:
+    colorArg: always
+    # useConfig: true
