@@ -169,7 +169,7 @@ cmd-alt-ctrl-shift-tab = 'move-workspace-to-monitor next --wrap-around'
 
 # See: https://nikitabobko.github.io/AeroSpace/commands.html#mode
 # alt-shift-semicolon = 'mode service'
-cmd-alt-ctrl-shift-slash = 'mode join'
+cmd-slash = 'mode join'
 
 cmd-alt-ctrl-backspace = ['flatten-workspace-tree', 'mode main'] # reset layout
 cmd-alt-ctrl-space = ['layout floating tiling', 'mode main'] # Toggle between floating and tiling layout
