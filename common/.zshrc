@@ -27,6 +27,7 @@ source "${ZINIT_HOME}/zinit.zsh"
 
 eval "$(mise activate zsh)"
 eval "$(fzf --zsh)"
+eval "$(atuin init zsh)"
 eval "$(zoxide init --cmd cd zsh)"
 
 # exports
@@ -37,7 +38,7 @@ export TERM=xterm-256color
 export "MICRO_TRUECOLOR=1"
 export EDITOR="nvim"
 export NVIM_TUI_ENABLE_TRUE_COLOR=1
-export VISUAL="code"
+export VISUAL="zeditor"
 export DOTFILES="$HOME/.dotfiles"
 export ZELLIJ_RUNNER_ROOT_DIR="Dev"
 export ZELLIJ_RUNNER_IGNORE_DIRS="node_modules,target"
@@ -145,9 +146,19 @@ alias :q="exit"
 alias oo='cd $OBSIDIAN_NOTES'
 alias of='fuz -p $OBSIDIAN_NOTES'
 alias or='vim $OBSIDIAN_NOTES/inbox/*.md'
+alias zed='zeditor'
 
 # shell integration
 # eval correct Homebrew path
 [[ "$OSTYPE" == "darwin"* ]] && eval "$(/opt/homebrew/bin/brew shellenv)"
 [[ "$OSTYPE" == "linux-gnu"* ]] && eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
 
+# bun completions
+[ -s "/home/marvan/.bun/_bun" ] && source "/home/marvan/.bun/_bun"
+
+# bun
+export BUN_INSTALL="$HOME/.bun"
+export PATH="$BUN_INSTALL/bin:$PATH"
+
+# keychain
+eval $(keychain --eval --quiet id_ed25519 id_rsa)
