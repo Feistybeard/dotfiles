@@ -459,26 +459,38 @@ serialize_pane_viewport true
 // Once these themes are defined, one of them should to be selected in the "theme" section of this file
 //
 themes {
-    dracula {
-        fg 248 248 242
-        bg 40 42 54
-        red 255 85 85
-        green 80 250 123
-        yellow 241 250 140
-        blue 98 114 164
-        magenta 255 121 198
-        orange 255 184 108
-        cyan 139 233 253
-        black 0 0 0
-        white 255 255 255
+    cyberdream-light {
+        bg "#ffffff"
+        fg "#16181a"
+        black "#7b8496"
+        red "#d11500"
+        green "#008b0c"
+        yellow "#997b00"
+        blue "#0057d1"
+        magenta "#d100bf"
+        cyan "#008c99"
+        white "#16181a"
+        orange "#d17c00"
+    }
+    cyberdream {
+        bg "#16181a"
+        fg "#ffffff"
+        black "#7b8496"
+        red "#ff6e5e"
+        green "#5eff6c"
+        yellow "#f1ff5e"
+        blue "#5ea1ff"
+        magenta "#ff5ef1"
+        cyan "#5ef1ff"
+        white "#ffffff"
+        orange "#ffbd5e"
     }
 }
 
 // Choose the theme that is specified in the themes section.
 // Default: default
 //
-theme "dracula"
-
+theme "cyberdream"
 // The name of the default layout to load on startup
 // Default: "default"
 //
