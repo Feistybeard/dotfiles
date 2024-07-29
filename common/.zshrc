@@ -122,6 +122,25 @@ zellij_attach_or_create() {
     local session_name=${1:-default}
     zellij attach --create $session_name
 }
+# tm [SESSION_NAME | FUZZY PATTERN] - create new tmux session, or switch to existing one.
+# Running `tm` will let you fuzzy-find a session mame
+# Passing an argument to `ftm` will switch to that session if it exists or create it otherwise
+ftm() {
+  [[ -n "$TMUX" ]] && change="switch-client" || change="attach-session"
+  if [ $1 ]; then
+    tmux $change -t "$1" 2>/dev/null || (tmux new-session -d -s $1 && tmux $change -t "$1"); return
+  fi
+  session=$(tmux list-sessions -F "#{session_name}" 2>/dev/null | fzf --exit-0) &&  tmux $change -t "$session" || echo "No sessions found."
+}
+# tmk [SESSION_NAME | FUZZY PATTERN] - delete tmux session
+# Running `tmk` will let you fuzzy-find a session mame to delete
+# Passing an argument to `ftmk` will delete that session if it exists
+ftmk() {
+  if [ $1 ]; then
+    tmux kill-session -t "$1"; return
+  fi
+  session=$(tmux list-sessions -F "#{session_name}" 2>/dev/null | fzf --exit-0) &&  tmux kill-session -t "$session" || echo "No session found to delete."
+}
 
 # alias
 alias l="eza -l -g --icons"
@@ -147,6 +166,8 @@ alias oo='cd $OBSIDIAN_NOTES'
 alias of='fuz -p $OBSIDIAN_NOTES'
 alias or='vim $OBSIDIAN_NOTES/inbox/*.md'
 alias zed='zeditor'
+alias tm="ftm"
+alias tmk="ftmk"
 
 # shell integration
 # eval correct Homebrew path
