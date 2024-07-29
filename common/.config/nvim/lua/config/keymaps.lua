@@ -101,8 +101,39 @@ k.set_keymap(
   { desc = "Definition in vertical split" }
 )
 
--- stylua: ignore start
-map("n", "<leader>df", function() utils.telescope_diff_file() end, { desc = "Diff file with current buffer" })
-map("n", "<leader>dr", function() utils.telescope_diff_file(true) end, { desc = "Diff recent file with current buffer" })
-map("n", "<leader>dg", function() utils.telescope_diff_from_history() end, { desc = "Diff from git history" })
--- stylua: ignore end
+map("n", "<leader>df", function()
+  utils.telescope_diff_file()
+end, { desc = "Diff file with current buffer" })
+map("n", "<leader>dr", function()
+  utils.telescope_diff_file(true)
+end, { desc = "Diff recent file with current buffer" })
+map("n", "<leader>dg", function()
+  utils.telescope_diff_from_history()
+end, { desc = "Diff from git history" })
+
+local nvim_tmux_nav = require("nvim-tmux-navigation")
+map(
+  "n",
+  "<C-h>",
+  nvim_tmux_nav.NvimTmuxNavigateLeft,
+  { desc = "Navigate left" }
+)
+map(
+  "n",
+  "<C-j>",
+  nvim_tmux_nav.NvimTmuxNavigateDown,
+  { desc = "Navigate down" }
+)
+map("n", "<C-k>", nvim_tmux_nav.NvimTmuxNavigateUp, { desc = "Navigate up" })
+map(
+  "n",
+  "<C-l>",
+  nvim_tmux_nav.NvimTmuxNavigateRight,
+  { desc = "Navigate right" }
+)
+map(
+  "n",
+  "<C-\\>",
+  nvim_tmux_nav.NvimTmuxNavigateLastActive,
+  { desc = "Navigate last active" }
+)
