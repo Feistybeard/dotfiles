@@ -82,7 +82,7 @@ return {
         api_host_cmd = "echo http://192.168.1.208:11434",
         api_key_cmd = "echo ''",
         openai_params = {
-          model = "codestral:latest",
+          model = "mistral-nemo:12b-instruct-2407-q8_0",
           frequency_penalty = 0,
           presence_penalty = 0,
           max_tokens = 4095,
@@ -91,7 +91,7 @@ return {
           n = 1,
         },
         openai_edit_params = {
-          model = "codestral:latest",
+          model = "mistral-nemo:12b-instruct-2407-q8_0",
           frequency_penalty = 0,
           presence_penalty = 0,
           max_tokens = 4095,
