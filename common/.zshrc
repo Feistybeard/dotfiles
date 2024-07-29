@@ -139,7 +139,17 @@ ftmk() {
   if [ $1 ]; then
     tmux kill-session -t "$1"; return
   fi
-  session=$(tmux list-sessions -F "#{session_name}" 2>/dev/null | fzf --exit-0) &&  tmux kill-session -t "$session" || echo "No session found to delete."
+  session=$(tmux list-sessions -F "#{session_name}" 2>/dev/null | fzf --height 40% --reverse --border-label ' Kill Tmux Session ' --border --prompt '⚡  ') &&  tmux kill-session -t "$session" || echo "No session found to delete."
+}
+sesh-sessions() {
+  {
+    exec </dev/tty
+    exec <&1
+    local session
+    session=$(sesh list | fzf --height 40% --reverse --border-label ' Attach/Create Tmux Session ' --border --prompt '⚡  ')
+    [[ -z "$session" ]] && return
+    sesh connect $session
+  }
 }
 
 # alias
@@ -166,9 +176,12 @@ alias oo='cd $OBSIDIAN_NOTES'
 alias of='fuz -p $OBSIDIAN_NOTES'
 alias or='vim $OBSIDIAN_NOTES/inbox/*.md'
 alias zed='zeditor'
-alias t="ftm"
+alias t="sesh-sessions"
 alias tk="ftmk"
 alias td="tmux detach"
+alias du="du -h"
+alias dus="du -hs *"
+alias tl="tail -f"
 
 # shell integration
 # eval correct Homebrew path
