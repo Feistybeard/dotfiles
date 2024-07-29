@@ -166,8 +166,9 @@ alias oo='cd $OBSIDIAN_NOTES'
 alias of='fuz -p $OBSIDIAN_NOTES'
 alias or='vim $OBSIDIAN_NOTES/inbox/*.md'
 alias zed='zeditor'
-alias tm="ftm"
-alias tmk="ftmk"
+alias t="ftm"
+alias tk="ftmk"
+alias td="tmux detach"
 
 # shell integration
 # eval correct Homebrew path
