@@ -1,11 +1,27 @@
 # Node
 npm-debug.log
+node_modules/
 
-# Mac
-.DS_Store
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Lua
+luac.out
+
+# Neovim
+Session.vim
 
 # Windows
 Thumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# MacOS
+._*
+.AppleDouble
+.DS_Store
 
 # WebStorm
 .idea/
@@ -17,6 +33,14 @@ Thumbs.db
 log/
 *.log
 
+# Environment
+.env
+.env.local
+.env.*.local
+.env.development.local
+.env.test.local
+.env.production.local
+
 # Private files
 *.pem
 
@@ -25,3 +49,14 @@ log/
 
 # VS Co de
 .vscode
+
+# Lazyvim/Lazy.nvim
+lazy-lock.json
+
+# Ssh
+id_rsa
+id_rsa.pub
+known_hosts
+
+# tmux plugins
+tmux/plugins/*
