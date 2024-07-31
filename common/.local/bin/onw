@@ -1,0 +1,16 @@
+#!/bin/bash
+
+file_name=$(date "+%Y-%V").md
+
+cd "$HOME/Documents/Notes" || exit
+
+if [ ! -d "00/weekly" ]; then
+    mkdir -p "00/weekly"
+fi
+
+if [ ! -f "00/weekly/${file_name}" ]; then
+    touch "00/weekly/${file_name}"
+    nvim "00/weekly/${file_name}"
+else
+    nvim "00/weekly/${file_name}"
+fi

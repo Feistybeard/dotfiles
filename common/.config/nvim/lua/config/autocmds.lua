@@ -60,3 +60,34 @@ autocmd({ "BufNewFile", "BufRead" }, {
 -- autocmd("BufReadPost", {
 --   command = "silent lua require('guess-indent').set_from_buffer('auto_cmd')",
 -- })
+
+-- Run ObsidianTemplate command based on folder when creating daily/weekly notes
+autocmd({ "BufNewFile", "BufRead" }, {
+  pattern = { "*.md" },
+  callback = function()
+    -- check if buffer/file is empty
+    local function check_empty()
+      if vim.api.nvim_buf_get_offset(0, 0) <= 0 then
+        local handle = io.open(vim.api.nvim_buf_get_name(0))
+        if handle == nil then
+          return true
+        end
+        local eof = handle:read(0)
+        handle:close()
+        if eof == nil then
+          return true
+        end
+      end
+      return false
+    end
+
+    if check_empty() then
+      local folder = vim.fn.expand("%:h")
+      if folder == "00/daily" then
+        vim.cmd("ObsidianTemplate daily")
+      elseif folder == "00/weekly" then
+        vim.cmd("ObsidianTemplate weekly")
+      end
+    end
+  end,
+})

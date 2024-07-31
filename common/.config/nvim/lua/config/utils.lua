@@ -162,28 +162,22 @@ function M.open_help(buf)
   end
 end
 
---- Keymap helper function
---- @param mode string The mode to set the keymap for
---- @param key string The key to map
---- @param cmd string The command to run
---- @param opts? table The keymap options
-function M.set_keymap(mode, key, cmd, opts)
-  local keymap_opts = { noremap = true, silent = true }
-  opts = opts or {} -- if opts is nil, set it to an empty table
-
-  if opts.desc ~= nil then
-    keymap_opts.desc = opts.desc
+--- Map a key combination to a command
+---@param modes string|string[]: The mode(s) to map the key combination to
+---@param lhs string: The key combination to map
+---@param rhs string|function: The command to run when the key combination is pressed
+---@param opts table: Options to pass to the keymap
+function M.keymap(modes, lhs, rhs, opts)
+  local options = { silent = true }
+  if opts then
+    options = vim.tbl_extend("force", options, opts)
   end
-
-  if opts.noremap ~= nil then
-    keymap_opts.noremap = opts.noremap
+  if type(modes) == "string" then
+    modes = { modes }
   end
-
-  if opts.silent ~= nil then
-    keymap_opts.silent = opts.silent
+  for _, mode in ipairs(modes) do
+    vim.keymap.set(mode, lhs, rhs, options)
   end
-
-  vim.api.nvim_set_keymap(mode, key, cmd, keymap_opts)
 end
 
 --- Get highlight properties for a given highlight name

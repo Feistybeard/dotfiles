@@ -1,4 +1,5 @@
-local k = require("config.utils")
+local utils = require("config.utils")
+local keymap = utils.keymap
 
 return {
   {
@@ -62,7 +63,7 @@ return {
     },
     -- plugin keymaps
     config = {
-      k.set_keymap(
+      keymap(
         "n",
         "<Leader>uo",
         "<cmd>TransparentToggle<cr>",
