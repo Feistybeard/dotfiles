@@ -2,37 +2,51 @@ local wezterm = require("wezterm")
 local Settings = {}
 
 local handle = io.popen("uname")
+if not handle then
+	return
+end
 local system_name = handle:read("*a")
 handle:close()
 system_name = system_name:gsub("%s+", "")
 
-local colors = {
-	bg = "#0E1419",
-}
-
 function Settings.setup(config)
 	config.leader = { key = "Space", mods = "SHIFT", timeout_milliseconds = 1000 }
-	-- config.color_scheme = "Modus-Vivendi-Tritanopia"
-	-- config.font = wezterm.font("JetBrainsMono Nerd Font")
-	config.window_frame = {
-		font = wezterm.font("Hasklug Nerd Font Mono", { weight = "DemiBold" }),
-		font_size = 9,
-		active_titlebar_bg = colors.bg,
-		inactive_titlebar_bg = colors.bg,
-	}
-	config.font = wezterm.font("Hasklug Nerd Font Mono", { weight = "Medium" })
+	-- config.font = wezterm.font("JetBrains Mono", { weight = "Medium" })
+	config.font = wezterm.font({ -- Normal text
+		family = "Monaspace Neon",
+		harfbuzz_features = { "calt", "liga", "dlig", "ss01", "ss02", "ss03", "ss04", "ss05", "ss06", "ss07", "ss08" },
+		stretch = "UltraCondensed",
+	})
 	config.font_rules = {
-		{
-			intensity = "Bold",
-			font = wezterm.font("Hasklug Nerd Font Mono", { weight = "DemiBold" }),
+		{ -- Italic
+			intensity = "Normal",
+			italic = true,
+			font = wezterm.font({
+				-- family = "Monaspace Radon", -- script style
+				family = "Monaspace Xenon", -- courier-like
+				style = "Italic",
+			}),
 		},
-		{
+		{ -- Bold
+			intensity = "Bold",
+			italic = false,
+			font = wezterm.font({
+				family = "Monaspace Krypton",
+				-- weight='ExtraBold',
+				weight = "Bold",
+			}),
+		},
+		{ -- Bold Italic
 			intensity = "Bold",
 			italic = true,
-			font = wezterm.font("Hasklug Nerd Font Mono", { weight = "DemiBold", style = "Italic" }),
+			font = wezterm.font({
+				family = "Monaspace Xenon",
+				style = "Italic",
+				weight = "Bold",
+			}),
 		},
 	}
-	config.font_size = 17
+	config.font_size = 14
 
 	config.underline_position = -6
 	config.underline_thickness = "250%"
