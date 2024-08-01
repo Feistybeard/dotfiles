@@ -69,7 +69,7 @@ autocmd({ "BufNewFile", "BufRead" }, {
 --   command = "silent lua require('guess-indent').set_from_buffer('auto_cmd')",
 -- })
 
--- Run ObsidianTemplate command based on folder when creating daily/weekly notes
+-- Run ObsidianTemplate command based on folder when creating new/daily/weekly notes
 autocmd({ "BufNewFile", "BufRead" }, {
   pattern = { "*.md" },
   callback = function()
@@ -95,6 +95,8 @@ autocmd({ "BufNewFile", "BufRead" }, {
         vim.cmd("ObsidianTemplate daily")
       elseif folder == "00/weekly" then
         vim.cmd("ObsidianTemplate weekly")
+      elseif folder == "inbox" then
+        vim.cmd("ObsidianTemplate note")
       end
     end
   end,

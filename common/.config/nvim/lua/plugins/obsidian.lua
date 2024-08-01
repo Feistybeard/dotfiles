@@ -54,25 +54,6 @@ return {
         "<cmd>cd $HOME/Documents/Notes/<cr>",
         { desc = "Change to Notes Directory" }
       ),
-      -- convert note to template
-      keymap(
-        "n",
-        "<leader>on",
-        "<cmd>ObsidianTemplate note<cr> :lua vim.cmd([[1,/^\\S/s/^\\n\\{1,}//]])<cr>",
-        { desc = "Convert to Template" }
-      ),
-      keymap(
-        "n",
-        "<leader>ox",
-        "<cmd>ObsidianTemplate daily<cr> :lua vim.cmd([[1,/^\\S/s/^\\n\\{1,}//]])<cr>",
-        { desc = "Convert to Template" }
-      ),
-      keymap(
-        "n",
-        "<leader>ow",
-        "<cmd>ObsidianTemplate weekly<cr> :lua vim.cmd([[1,/^\\S/s/^\\n\\{1,}//]])<cr>",
-        { desc = "Convert to Template" }
-      ),
       -- strip date from note title and replace dashes with spaces
       -- must have cursor on title
       keymap(
