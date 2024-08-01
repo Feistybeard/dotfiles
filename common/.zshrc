@@ -54,6 +54,9 @@ export FZF_DEFAULT_OPTS=$FZF_DEFAULT_OPTS'
   --border="rounded" --border-label="" --preview-window="border-rounded" --prompt="> "
   --marker=">" --pointer="◆" --separator="─" --scrollbar="│"
   --height=60% '
+if [[ $FIND_IT_FASTER_ACTIVE -eq 1 ]]; then
+  FZF_DEFAULT_OPTS='--height=100%'
+fi
 FREETYPE_PROPERTIES="cff:no-stem-darkening=0 autofitter:no-stem-darkening=0"
 
 # plugins
