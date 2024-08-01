@@ -9,6 +9,9 @@ return {
     "nvim-lua/plenary.nvim",
   },
   opts = {
+    ui = {
+      eneable = false,
+    },
     workspaces = {
       {
         name = "marvan",

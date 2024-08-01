@@ -8,6 +8,14 @@ local utils = require("config.utils")
 local general = augroup("General Settings", { clear = true })
 local clear_on_save = augroup("CleanOnSave", {})
 
+-- Disable autoformat for markdown  files
+vim.api.nvim_create_autocmd({ "FileType" }, {
+  pattern = { "markdown" },
+  callback = function()
+    vim.b.autoformat = false
+  end,
+})
+
 autocmd("BufWinEnter", {
   callback = function(data)
     utils.open_help(data.buf)
