@@ -11,6 +11,7 @@ keymap("n", "n", "nzzzv", { desc = "Center screen after search for next" })
 keymap("n", "N", "Nzzzv", { desc = "Center screen after search for previous" })
 keymap("n", "<c-u>", "<c-u>zz", { desc = "Center screen after half page up" })
 keymap("n", "<c-d>", "<c-d>zz", { desc = "Center screen after half page down" })
+
 -- Package-info keymaps
 keymap("n", "<leader>cp", "", { desc = "Package Info" })
 
@@ -34,6 +35,7 @@ keymap("n", "<leader>cpc", function()
   require("package-info").change_version()
 end, { silent = true, noremap = true, desc = "Change package version" })
 
+-- Undo last change
 keymap("i", ",", ",<C-g>U", { desc = "Undo last change" })
 keymap("i", ".", ".<C-g>U", { desc = "Undo last change" })
 keymap("i", "!", "!<C-g>U", { desc = "Undo last change" })
@@ -44,6 +46,7 @@ keymap("n", "<leader>gd", function()
   utils.definition_split()
 end, { desc = "Definition in vertical split" })
 
+-- Diff files with from current/recent/git
 keymap("n", "<leader>df", function()
   utils.telescope_diff_file()
 end, { desc = "Diff file with current buffer" })
@@ -54,6 +57,7 @@ keymap("n", "<leader>dg", function()
   utils.telescope_diff_from_history()
 end, { desc = "Diff from git history" })
 
+-- Tmux navigator
 local nvim_tmux_nav = require("nvim-tmux-navigation")
 keymap(
   "n",
@@ -79,4 +83,12 @@ keymap(
   "<C-\\>",
   nvim_tmux_nav.NvimTmuxNavigateLastActive,
   { desc = "Navigate last active" }
+)
+
+-- Tailwind fold
+keymap(
+  "n",
+  "<leader>uc",
+  ":TailwindFoldToggle<cr>",
+  { desc = "Toggle tailwind fold" }
 )
