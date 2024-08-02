@@ -26,7 +26,6 @@ fi
 source "${ZINIT_HOME}/zinit.zsh"
 
 eval "$(mise activate zsh)"
-eval "$(fzf --zsh)"
 eval "$(atuin init zsh)"
 eval "$(zoxide init --cmd cd zsh)"
 
@@ -170,7 +169,7 @@ alias g="lazygit"
 alias gcb="git_clone_bare $1"
 alias f="fd --type f --hidden --exclude .git | fzf | xargs nvim"
 alias ..="cd .."
-alias ....="cd ../.."
+alias ...="cd ../.."
 alias rmf="rm -rf"
 alias z="zellij_attach_or_create"
 alias zz="zellij-runner"
