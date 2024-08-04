@@ -4,7 +4,6 @@
 local utils = require("config.utils")
 local keymap = utils.keymap
 
-keymap("n", "<leader>bb", ":Telescope buffers<cr>", { desc = "Buffers" })
 keymap("n", "<leader>U", ":UndotreeToggle<cr>", { desc = "Toggle Undotree" })
 keymap("n", "<c-a>", "ggVG<c-$>", { desc = "Select all text" })
 keymap("n", "n", "nzzzv", { desc = "Center screen after search for next" })
@@ -35,7 +34,7 @@ keymap("n", "<leader>cpc", function()
   require("package-info").change_version()
 end, { silent = true, noremap = true, desc = "Change package version" })
 
--- Undo last change
+-- Fix for undos in insert mode
 keymap("i", ",", ",<C-g>U", { desc = "Undo last change" })
 keymap("i", ".", ".<C-g>U", { desc = "Undo last change" })
 keymap("i", "!", "!<C-g>U", { desc = "Undo last change" })
@@ -91,4 +90,43 @@ keymap(
   "<leader>uc",
   ":TailwindFoldToggle<cr>",
   { desc = "Toggle tailwind fold" }
+)
+
+-- Remote SSHFS
+keymap("n", "<leader>r", "", { desc = "remote" })
+keymap(
+  "n",
+  "<leader>rc",
+  ":RemoteSSHFSConnect<cr>",
+  { desc = "Remote SSHFS Connect" }
+)
+keymap(
+  "n",
+  "<leader>rd",
+  ":RemoteSSHFSDisconnect<cr>",
+  { desc = "Remote SSHFS Disconnect" }
+)
+keymap(
+  "n",
+  "<leader>rf",
+  ":RemoteSSHFSFindFiles<cr>",
+  { desc = "Remote SSHFS File" }
+)
+keymap(
+  "n",
+  "<leader>rg",
+  ":RemoteSSHFSLiveGrep<cr>",
+  { desc = "Remote SSHFS Live Grep" }
+)
+keymap(
+  "n",
+  "<leader>rR",
+  ":RemoteSSHFSReload<cr>",
+  { desc = "Remote SSHFS Reload" }
+)
+keymap(
+  "n",
+  "<leader>re",
+  ":RemoteSSHFSEdit<cr>",
+  { desc = "Remote SSHFS Edit" }
 )

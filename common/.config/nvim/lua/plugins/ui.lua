@@ -121,7 +121,6 @@ return {
     event = "VeryLazy",
     opts = function()
       local grappleline = require("grapple-line")
-      local utils = require("config.utils")
       -- local copilot_colors = {
       --   [""] = utils.get_hlgroup("Comment"),
       --   ["Normal"] = utils.get_hlgroup("Comment"),
