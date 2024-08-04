@@ -31,6 +31,7 @@ return {
       go_out = "H",
       go_in_plus = "",
       go_out_plus = "",
+      close = "<Esc>",
     },
     windows = {
       width_nofocus = 20,
