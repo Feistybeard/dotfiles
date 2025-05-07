@@ -1,4 +1,4 @@
--- cyberdream theme for wezterm
+-- ── cyberdream theme for wezterm ────────────────────────────────────
 return {
 	foreground = "#ffffff",
 	background = "#16181a",

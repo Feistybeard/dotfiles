@@ -1,5 +1,5 @@
 local wezterm = require("wezterm")
-local Functions = {}
+local functions = {}
 
 local icons = {
 	["docker"] = wezterm.nerdfonts.linux_docker,
@@ -30,30 +30,4 @@ local icons = {
 	["dotnet"] = wezterm.nerdfonts.md_language_csharp,
 }
 
-Functions.get_last_folder_segment = function(cwd)
-	if cwd == nil then
-		return "N/A" -- or some default value you prefer
-	end
-
-	-- Strip off 'file:///' if present
-	local pathStripped = cwd:match("^file:///(.+)") or cwd
-	-- Normalize backslashes to slashes for Windows paths
-	pathStripped = pathStripped:gsub("\\", "/")
-	-- Split the path by '/'
-	local path = {}
-	for segment in string.gmatch(pathStripped, "[^/]+") do
-		table.insert(path, segment)
-	end
-	return path[#path] -- returns the last segment
-end
-
-function Functions.get_process(tab)
-	local process_name = tab.active_pane.foreground_process_name:match("([^/\\]+)%.exe$")
-		or tab.active_pane.foreground_process_name:match("([^/\\]+)$")
-
-	local icon = icons[process_name] or wezterm.nerdfonts.seti_checkbox_unchecked
-
-	return icon
-end
-
-return Functions
+return functions

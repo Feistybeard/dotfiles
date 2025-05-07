@@ -1,67 +1,17 @@
 local wezterm = require("wezterm")
 local act = wezterm.action
-local nvim_path = "/home/linuxbrew/.linuxbrew/bin/nvim"
+local keybinds = {}
 
-local Keybinds = {}
-
--- Helper functions for keybinds
--- local direction_keys = {
--- 	Left = "h",
--- 	Down = "j",
--- 	Up = "k",
--- 	Right = "l",
--- 	-- reverse lookup
--- 	h = "Left",
--- 	j = "Down",
--- 	k = "Up",
--- 	l = "Right",
--- }
--- local function is_vim(pane)
--- 	-- this is set by smart-splits.nvim Neovim plugin, and unset on ExitPre in Neovim
--- 	return pane:get_user_vars().IS_NVIM == "true"
--- end
-
--- local function split_nav(resize_or_move, key)
--- 	return {
--- 		key = key,
--- 		mods = resize_or_move == "resize" and "META" or "CTRL",
--- 		action = wezterm.action_callback(function(win, pane)
--- 			if is_vim(pane) then
--- 				-- pass the keys through to vim/nvim
--- 				win:perform_action({
--- 					SendKey = { key = key, mods = resize_or_move == "resize" and "META" or "CTRL" },
--- 				}, pane)
--- 			else
--- 				if resize_or_move == "resize" then
--- 					win:perform_action({ AdjustPaneSize = { direction_keys[key], 3 } }, pane)
--- 				else
--- 					win:perform_action({ ActivatePaneDirection = direction_keys[key] }, pane)
--- 				end
--- 			end
--- 		end),
--- 	}
--- end
-
-function Keybinds.setup(config)
+function keybinds.setup(config)
 	config.keys = {
-		-- -- move between split panes
-		-- split_nav("move", "h"),
-		-- split_nav("move", "j"),
-		-- split_nav("move", "k"),
-		-- split_nav("move", "l"),
-		-- -- resize panes
-		-- split_nav("resize", "h"),
-		-- split_nav("resize", "j"),
-		-- split_nav("resize", "k"),
-		-- split_nav("resize", "l"),
 		{
 			mods = "LEADER",
-			key = "-",
+			key = "v",
 			action = act.SplitVertical({ domain = "CurrentPaneDomain" }),
 		},
 		{
 			mods = "LEADER",
-			key = "=",
+			key = "s",
 			action = act.SplitHorizontal({ domain = "CurrentPaneDomain" }),
 		},
 		{
@@ -69,7 +19,6 @@ function Keybinds.setup(config)
 			mods = "LEADER",
 			action = act.CloseCurrentPane({ confirm = true }),
 		},
-		-- zoom pane
 		{
 			mods = "LEADER",
 			key = "f",
@@ -83,11 +32,31 @@ function Keybinds.setup(config)
 		{
 			mods = "LEADER",
 			key = "0",
-			action = act.PaneSelect({ mode = "SwapWithActive" }),
+			action = act.PaneSelect({ mode = "SwapWithActive", alphabet = "123456789" }),
 		},
 		{
 			mods = "LEADER",
-			key = "Enter",
+			key = "h",
+			action = act.ActivatePaneDirection("Left"),
+		},
+		{
+			key = "j",
+			mods = "LEADER",
+			action = act.ActivatePaneDirection("Down"),
+		},
+		{
+			key = "k",
+			mods = "LEADER",
+			action = act.ActivatePaneDirection("Up"),
+		},
+		{
+			key = "l",
+			mods = "LEADER",
+			action = act.ActivatePaneDirection("Right"),
+		},
+		{
+			mods = "LEADER",
+			key = "]",
 			action = act.ActivateCopyMode,
 		},
 		{
@@ -105,21 +74,6 @@ function Keybinds.setup(config)
 						window:active_tab():set_title(line)
 					end
 				end),
-			}),
-		},
-		{
-			key = ",",
-			mods = "LEADER",
-			action = act.SpawnCommandInNewTab({
-				cwd = os.getenv("WEZTERM_CONFIG_DIR"),
-				set_environment_variables = {
-					TERM = "screen-256color",
-				},
-				args = {
-					-- TODO: make this check OS running for correct path
-					nvim_path,
-					os.getenv("WEZTERM_CONFIG_FILE"),
-				},
 			}),
 		},
 		{
@@ -151,9 +105,11 @@ function Keybinds.setup(config)
 				end),
 			}),
 		},
-		{ key = "S", mods = "LEADER", action = wezterm.action({ EmitEvent = "save_session" }) },
-		{ key = "L", mods = "LEADER", action = wezterm.action({ EmitEvent = "load_session" }) },
-		{ key = "R", mods = "LEADER", action = wezterm.action({ EmitEvent = "restore_session" }) },
+		{
+			key = "o",
+			mods = "LEADER",
+			action = wezterm.action.EmitEvent("toggle-opacity"),
+		},
 		{
 			key = "W",
 			mods = "LEADER",
@@ -187,4 +143,4 @@ function Keybinds.setup(config)
 	end
 end
 
-return Keybinds
+return keybinds

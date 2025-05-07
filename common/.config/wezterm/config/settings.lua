@@ -1,92 +1,72 @@
 local wezterm = require("wezterm")
-local Settings = {}
+local settings = {}
+local opacity = 0.8
 
 local handle = io.popen("uname")
 if not handle then
 	return
 end
+
 local system_name = handle:read("*a")
 handle:close()
 system_name = system_name:gsub("%s+", "")
 
-function Settings.setup(config)
+function settings.setup(config)
 	config.leader = { key = "Space", mods = "SHIFT", timeout_milliseconds = 1000 }
-	-- config.font = wezterm.font("JetBrains Mono", { weight = "Medium" })
-	config.font = wezterm.font({ -- Normal text
-		family = "Monaspace Neon",
+	-- ── Text ────────────────────────────────────────────────────────────
+	config.window_frame = {
+		font = wezterm.font({ family = "Hasklug Nerd Font Mono", weight = "Regular" }),
+		font_size = 9,
+	}
+	config.font = wezterm.font({
+		family = "Hasklug Nerd Font Mono",
+		weight = "Medium",
 		harfbuzz_features = { "calt", "liga", "dlig", "ss01", "ss02", "ss03", "ss04", "ss05", "ss06", "ss07", "ss08" },
-		stretch = "UltraCondensed",
 	})
 	config.font_rules = {
-		{ -- Italic
+		{
 			intensity = "Normal",
 			italic = true,
 			font = wezterm.font({
-				-- family = "Monaspace Radon", -- script style
-				family = "Monaspace Xenon", -- courier-like
+				family = "Hasklug Nerd Font Mono",
 				style = "Italic",
-			}),
-		},
-		{ -- Bold
-			intensity = "Bold",
-			italic = false,
-			font = wezterm.font({
-				family = "Monaspace Krypton",
-				-- weight='ExtraBold',
-				weight = "Bold",
-			}),
-		},
-		{ -- Bold Italic
-			intensity = "Bold",
-			italic = true,
-			font = wezterm.font({
-				family = "Monaspace Xenon",
-				style = "Italic",
-				weight = "Bold",
 			}),
 		},
 	}
-	config.font_size = 14
-
+	config.font_size = 19
+	config.line_height = 1.25
 	config.underline_position = -6
 	config.underline_thickness = "250%"
 
-	config.window_background_opacity = 0.86
-	config.macos_window_background_blur = 20
-
+	-- ── UI ──────────────────────────────────────────────────────────────
+	config.window_background_opacity = opacity
+	config.macos_window_background_blur = 15
 	if system_name == "Darwin" then
 		config.window_decorations = "RESIZE"
 	end
-
-	config.cursor_blink_rate = 600
-	config.default_cursor_style = "BlinkingBlock"
 	config.hide_mouse_cursor_when_typing = true
-
-	config.use_dead_keys = false
-	config.scrollback_lines = 5000
-	config.adjust_window_size_when_changing_font_size = false
 	config.hide_tab_bar_if_only_one_tab = true
-	config.use_fancy_tab_bar = false
+	config.use_fancy_tab_bar = true
 	config.show_tab_index_in_tab_bar = true
-
 	config.inactive_pane_hsb = {
 		saturation = 0.4,
 		brightness = 0.3,
 	}
+	config.colors = require("themes.cyberdream")
 
-	config.window_frame = {
-		font = wezterm.font({ family = "Noto Sans", weight = "Regular" }),
-		font_size = 9,
-	}
+	-- ── Options ─────────────────────────────────────────────────────────
+	config.use_dead_keys = false
+	config.scrollback_lines = 5000
+	config.adjust_window_size_when_changing_font_size = false
 	config.window_padding = {
-		left = 30,
-		right = 30,
-		top = 40,
-		bottom = 40,
+		left = 4,
+		right = 4,
+		top = 4,
+		bottom = 1,
 	}
-
 	config.max_fps = 120
 	config.front_end = "WebGpu"
+	config.webgpu_power_preference = "HighPerformance"
 end
 
-return Settings
+return settings
