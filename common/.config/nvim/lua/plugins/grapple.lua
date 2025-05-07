@@ -2,7 +2,7 @@ return {
   {
     "cbochs/grapple.nvim",
     opts = {
-      scope = "git", -- also try out "git_branch"
+      scope = "git",
       icons = true,
     },
     event = { "BufReadPost", "BufNewFile" },
@@ -13,16 +13,6 @@ return {
         "<leader>M",
         "<cmd>Grapple toggle_tags<cr>",
         desc = "Grapple open tags window",
-      },
-      {
-        "<leader>n",
-        "<cmd>Grapple cycle_tags next<cr>",
-        desc = "Grapple cycle next tag",
-      },
-      {
-        "<leader>p",
-        "<cmd>Grapple cycle_tags prev<cr>",
-        desc = "Grapple cycle previous tag",
       },
       {
         "<leader>1",
@@ -52,6 +42,11 @@ return {
       "cbochs/grapple.nvim",
       opts = {
         number_of_files = 4,
+        mode = "unique_filename",
+        -- colors = {
+        --   active = "",
+        --   inactive = "",
+        -- },
       },
     },
   },
