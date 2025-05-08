@@ -65,8 +65,11 @@ function settings.setup(config)
 		bottom = 1,
 	}
 	config.max_fps = 120
+	config.animation_fps = 120
 	config.front_end = "WebGpu"
 	config.webgpu_power_preference = "HighPerformance"
+	config.enable_kitty_graphics = true
+	config.audible_bell = "Disabled"
 end
 
 return settings
