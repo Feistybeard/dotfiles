@@ -1,0 +1,6 @@
+# Switch to HDMI 1
+cmd + ctrl + alt - z : m1ddc display 1 set input 17
+# Switch to HDMI 2
+cmd + ctrl + alt - c : m1ddc display 1 set input 18
+# Switch to DisplayPort 1
+cmd + ctrl + alt - v : m1ddc display 1 set input 15
