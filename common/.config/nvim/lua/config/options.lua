@@ -20,9 +20,9 @@ opt.confirm = true
 opt.conceallevel = conceallevel
 opt.cursorline = false
 opt.listchars = { tab = "» ", trail = "·", nbsp = "␣" }
-opt.wrap = false
+opt.wrap = true
+opt.linebreak = true
 opt.iskeyword:remove("_")
-
 -- Undercurl
 vim.cmd([[let &t_Cs = "\e[4:3m"]])
 vim.cmd([[let &t_Ce = "\e[4:0m"]])

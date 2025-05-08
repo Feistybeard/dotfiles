@@ -12,8 +12,8 @@ keymap({ "n", "v" }, "<leader>c4", ":CBccline<cr>", { desc = "Comment - center l
 
 keymap("i", "<A-h>", "<Left>", { desc = "Move left in insert mode" })
 keymap("i", "<A-l>", "<Right>", { desc = "Move right in insert mode" })
-keymap("i", "<A-j>", "<Up>", { desc = "Move up in insert mode" })
-keymap("i", "<A-k>", "<Down>", { desc = "Move down in insert mode" })
+keymap("i", "<A-j>", "<Down>", { desc = "Move down in insert mode" })
+keymap("i", "<A-k>", "<Up>", { desc = "Move up in insert mode" })
 
 keymap("i", "jk", "<Esc>", opts)
 keymap("n", "<c-a>", "ggVG<c-$>", { desc = "Select all text" })
@@ -34,6 +34,8 @@ keymap("n", "<leader>gd", function()
 end, { desc = "Definition in vertical split" })
 
 -- Plugins
+---- FzfLua
+keymap("n", "<leader>xs", require("fzf-lua").spell_suggest, { desc = "Spelling Suggestions" })
 ---- Undotree
 keymap("n", "<leader>U", ":UndotreeToggle<cr>", { desc = "Toggle Undotree" })
 ---- Tailwind fold
